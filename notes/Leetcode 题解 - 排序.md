@@ -49,6 +49,46 @@ public int findKthLargest(int[] nums, int k) {
     return nums[nums.length - k];
 }
 ```
+```python
+class Solution(object):
+    def findKthLargest(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+        #1.
+        nums.sort()
+        return nums[len(nums)-k]
+        
+        #2.
+        #nums.sort( reverse = True )
+        #return nums[k-1]
+```
+```python
+def quicksort(data, left, right): # 輸入資料，和從兩邊開始的位置
+    if left >= right :            # 如果左邊大於右邊，就跳出function
+        return
+
+    i = left                      # 左邊的代理人
+    j = right                     # 右邊的代理人
+    key = data[left]                 # 基準點
+
+    while i != j:                  
+        while data[j] > key and i < j:   # 從右邊開始找，找比基準點小的值
+            j -= 1
+        while data[i] <= key and i < j:  # 從左邊開始找，找比基準點大的值
+            i += 1
+        if i < j:                        # 當左右代理人沒有相遇時，互換值
+            data[i], data[j] = data[j], data[i] 
+
+    # 將基準點歸換至代理人相遇點
+    data[left] = data[i] 
+    data[i] = key
+
+    quicksort(data, left, i-1)   # 繼續處理較小部分的子循環
+    quicksort(data, i+1, right)  # 繼續處理較大部分的子循環
+```
 
 **堆**  ：时间复杂度 O(NlogK)，空间复杂度 O(K)。
 
@@ -62,6 +102,13 @@ public int findKthLargest(int[] nums, int k) {
     }
     return pq.peek();
 }
+```
+```python
+def fKLHeap(nums, k):
+	heapq.heapify(nums)
+    while len(nums) > k:
+        heapq.heappop(nums)
+    return nums[0]
 ```
 
 **快速选择**  ：时间复杂度 O(N)，空间复杂度 O(1)
@@ -102,6 +149,42 @@ private void swap(int[] a, int i, int j) {
     a[i] = a[j];
     a[j] = t;
 }
+```
+```python
+class Solution:
+    def partition(self, nums, left, right):
+        pivot = nums[left]
+        l, r = left+1, right
+        while l <= r:
+            if nums[l] < pivot and nums[r] > pivot:
+                nums[l], nums[r] = nums[r], nums[l]
+                l, r = l+1, r-1
+            if nums[l] >= pivot:
+                l += 1
+            if nums[r] <= pivot:
+                r -= 1
+        nums[left], nums[r] = nums[r], nums[left]
+        return r
+    
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        size = len(nums)
+        left, right = 0, size-1
+        while True:
+            cur_index = self.partition( nums, left, right)
+            if cur_index > k-1:
+                right = cur_index -1
+            elif cur_index < k - 1:
+                left = cur_index + 1
+            else:
+                return nums[ cur_index ]
+```
+```python
+def fKLQselect(nums, k):
+   if not nums: return
+   p = random.choice(nums)
+   l, m, r = [x for x in nums if x > p], [x for x in nums if x == p], [x for x in nums if x < p]
+   nums, i, j = l+m+r, len(l), len(l)+len(m)
+   return fKLQselect(nums[:i], k) if k <= i else fKLQselect(nums[j:], k-j) if k > j else nums[i]
 ```
 
 ## 桶排序
